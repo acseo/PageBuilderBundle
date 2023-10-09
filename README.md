@@ -110,3 +110,9 @@ In order to work, your Twig page **must** contain an input field with the *page 
 
 {{ component('PageBuilder', {'idField' : 'page_uri'}) }}
 ```
+
+# Result
+
+If everything goes well, you should have a screen like this :
+
+![Screenshot of the result](./acseopagebuilder.png)
