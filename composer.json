@@ -1,0 +1,31 @@
+{
+    "name": "acseo/pagebuilder-bundle",
+    "description": "This bundle provides a PageBuilder Solution built on GrapesJS.",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Potier",
+            "email": "nicolas.potier@acseo.fr"
+        }
+    ],
+    "require": {
+        "symfony/http-kernel" : "^6.1",
+        "symfony/twig-bundle" : "^6",
+        "symfony/orm-pack" : "^2"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": { "ACSEO\\PageBuilderBundle\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ACSEO\\PageBuilderBundle\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+        }
+    }
+}

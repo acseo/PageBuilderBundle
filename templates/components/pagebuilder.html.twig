@@ -1,0 +1,80 @@
+{# The div container for our GrapeJS instance #}
+<div id="{{this.getId()}}"></div>
+
+{# Load the GrapesJS Javascript files #}
+{% for url in this.getGrapeJSConfig()['js'] %}
+    <script src="{{url}}"></script>
+{% endfor %}
+
+{# Load the GrapesJS CSS files #}
+{% for url in this.getGrapeJSConfig()['css'] %}
+    <link rel="stylesheet" href="{{url}}">
+{% endfor %}
+
+{# Load the GrapesJS JS Plugin files #}
+{% for url in this.getPluginsURLs() %}
+    <script src="{{url}}"></script>
+{% endfor %}
+
+{# JS used to instanciate GrapesJS #}
+<script type='text/javascript'>   
+document.addEventListener("DOMContentLoaded", function() {
+
+    // Load plugins
+    function loadCustomBlocks(editor) {
+    {% for blockTitle, blockInfos in this.getCustomBlocks() %}
+        editor.Blocks.add('{{blockTitle}}', {
+            label: '{{blockInfos['label']}}',
+            category: '{{blockInfos['category']}}',
+            media: '{{blockInfos['media']|raw}}',
+            content: '{{blockInfos['content']|raw}}',
+        });
+    {% endfor %}
+}
+
+    // Init the Editor
+    const editor = grapesjs.init({
+        // ID of the container
+        container : '#{{this.getId()}}',
+        // Plugins
+        plugins: [loadCustomBlocks, '{{this.getPluginsNames()|join("','")|raw}}'],
+        // Remote Storage
+        storageManager: {
+            type: 'remote',
+            stepsBeforeSave: 3,
+            options: {
+                remote: {
+                    urlLoad: "{{ url(this.getGrapeJSConfig()['urlLoad']) }}?uri="+document.getElementById('{{this.idField}}').value,
+                    urlStore: "{{ url(this.getGrapeJSConfig()['urlStore']) }}",
+                    onStore: data => ({ 
+                        uri: document.getElementById('{{this.idField}}').value,
+                        html: editor.getHtml(),
+                        css: editor.getCss(),
+                        data 
+                    }),
+                    onLoad: result => result.data,
+                }
+            }
+        }            
+    });    
+
+    // Add Save Button
+    editor.Panels.addButton('options', [{
+        id: 'save-db',            
+        label: `
+        <svg xmlns="http://www.w3.org/2000/svg" style="display: block; max-width:20px" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc. --><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V173.3c0-17-6.7-33.3-18.7-45.3L352 50.7C340 38.7 323.7 32 306.7 32H64zm0 96c0-17.7 14.3-32 32-32H288c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V128zM224 288a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>            
+        `,
+        command: 'save-db',
+        attributes: {
+            title: 'Save Changes'
+        },
+    }]);
+
+    editor.Commands.add('save-db', {
+        run: function(editor, sender) {
+            sender && sender.set('active', 0); // turn off the button
+            editor.store();
+        }
+    });
+});
+</script>
