@@ -32,6 +32,7 @@ class PageBuilderBundle extends AbstractBundle
         $definition->rootNode()
             ->children()
                 ->arrayNode('grapesjs')
+                    ->treatNullLike(array())
                     ->children()
                         ->arrayNode('js')
                             ->beforeNormalization()
@@ -75,6 +76,7 @@ class PageBuilderBundle extends AbstractBundle
                         ->scalarNode('urlStore')->defaultValue('acseo_page_builder_save')->end()
                         ->scalarNode('pageController')->defaultValue(PageController::class)->end()
                     ->end()
+                    ->isRequired()
                 ->end()
                 ->arrayNode('plugins')
                     ->arrayPrototype()
@@ -103,6 +105,8 @@ class PageBuilderBundle extends AbstractBundle
 
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
+        dump($config);
+        die();
         if (!isset($config['grapesjs'])) {
             return;
         }

@@ -3,7 +3,7 @@
 This bundle provides a PageBuilder Solution built on top of [GrapesJS](https://grapesjs.com/).
 
 When using this Bundle, you will have access to :
-* a Twig Component that you can use in your template with `{{ component('PageBuilder' {'idField' : 'my_field'}) }}`. This component will create the PageBuilder area.
+* a **Twig Component** that you can use in your template with `{{ component('PageBuilder' {'idField' : 'my_field'}) }}`. This component will create the PageBuilder area.
 * a `Page` Entity and a `PageController` that will allow you to store and load the HTML, CSS, and JSON config of the generated Web page.
 
 ## Installation
@@ -60,13 +60,23 @@ acseo_page_builder:
   #
   # GrapesJS Config
   #
-  grapesjs :
-    js: # Optional : URL of the JS file for GrapeJS. Default : https://cdnjs.cloudflare.com/ajax/libs/grapesjs/0.21.7/grapes.min.js
-    css: # Optional : URL of the CSS file for GrapeJS. Default : https://cdnjs.cloudflare.com/ajax/libs/grapesjs/0.21.7/css/grapes.min.css
-    urlLoad: # Optional : Route name used to load Page JSON Content. Default : acseo_page_builder_load
-    urlStore: # Optional : Route name used to store Page JSON Content. Default : acseo_page_builder_save
-    pageController: # optional : by default, this is the PageController::class provided with this bundle. You can change it if you want to use your own logic to manage the pages
-
+  # Use this to have only default values
+  #
+  grapesjs: ~  
+  #
+  # Use this to set specific values
+  #
+  grapesjs:
+    js:             # Optional : URL of the JS file for GrapeJS. 
+                    # Default : https://cdnjs.cloudflare.com/ajax/libs/grapesjs/0.21.7/grapes.min.js
+    css:            # Optional : URL of the CSS file for GrapeJS. 
+                    # Default : https://cdnjs.cloudflare.com/ajax/libs/grapesjs/0.21.7/css/grapes.min.css
+    urlLoad:        # Optional : Route name used to load Page JSON Content. 
+                    # Default : acseo_page_builder_load
+    urlStore:       # Optional : Route name used to store Page JSON Content. 
+                    # Default : acseo_page_builder_save
+    pageController: # Optional : Controller used to load / save Pages.       
+                    # Default : PageController::class 
   #
   # Plugins Config
   # Array of name, url, options
