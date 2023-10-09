@@ -105,8 +105,6 @@ class PageBuilderBundle extends AbstractBundle
 
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
-        dump($config);
-        die();
         if (!isset($config['grapesjs'])) {
             return;
         }
