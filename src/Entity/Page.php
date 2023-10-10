@@ -56,7 +56,7 @@ class Page
             'uri' => new Assert\NotBlank(),
             'html' => new Assert\NotBlank(),
             'css' => new Assert\NotBlank(),
-            'data' => new Assert\NotBlank(),
+            'data' => new Assert\NotNull()
         ]);
 
         $violations = $validator->validate($data, $constraint);

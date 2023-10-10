@@ -15,6 +15,7 @@
         "symfony/orm-pack" : "^2"
     },
     "require-dev": {
+        "symfony/test-pack": "^1"
     },
     "autoload": {
         "psr-4": { "ACSEO\\PageBuilderBundle\\": "src/" }
