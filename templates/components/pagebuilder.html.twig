@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
             label: '{{blockInfos['label']}}',
             category: '{{blockInfos['category']}}',
             media: '{{blockInfos['media']|raw}}',
-            content: '{{blockInfos['content']|raw}}',
+            content: {{blockInfos['content']|json_encode()|raw}}
         });
     {% endfor %}
 }

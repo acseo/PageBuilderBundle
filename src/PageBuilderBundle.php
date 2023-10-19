@@ -18,9 +18,11 @@ use ACSEO\PageBuilderBundle\Repository\PageRepository;
 use ACSEO\PageBuilderBundle\Service\PageLoader;
 use ACSEO\PageBuilderBundle\Service\PageSaver;
 use ACSEO\PageBuilderBundle\Twig\PageBuilder;
+use ACSEO\PageBuilderBundle\Twig\PageRender;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
 class PageBuilderBundle extends AbstractBundle
@@ -96,7 +98,7 @@ class PageBuilderBundle extends AbstractBundle
                             ->scalarNode('label')->isRequired()->end()
                             ->scalarNode('category')->isRequired()->end()
                             ->scalarNode('media')->isRequired()->end()
-                            ->scalarNode('content')->isRequired()->end()
+                            ->variableNode('content')->isRequired()->end()
                         ->end()
                     ->end()
                 ->end()
@@ -110,27 +112,29 @@ class PageBuilderBundle extends AbstractBundle
         }
 
         $builder->register(PageBuilder::class)
-            ->setAutowired(true)
             ->setAutoconfigured(true)
             ->addArgument($config['grapesjs'])
             ->addArgument($config['plugins'] ?? [])
             ->addArgument($config['blocks'] ?? []);
 
+        $builder->register(PageRender::class)
+            ->setArgument('$httpKernelRuntime', new Reference('twig.runtime.httpkernel'))
+            ->setArgument('$router', new Reference('router'))
+            ->setAutoconfigured(true)
+            ;
+
         $builder->register(PageRepository::class)
-            ->setAutowired(true)
+            ->setArgument('$registry', new Reference('doctrine'))
             ->setAutoconfigured(true);
 
         $builder->register(PageLoader::class)
-            ->setAutowired(true)
             ->setAutoconfigured(true);
 
         $builder->register(PageSaver::class)
-            ->setAutowired(true)
             ->setAutoconfigured(true);
 
         if (PageController::class === $config['grapesjs']['pageController']) {
             $builder->register(PageController::class)
-                ->setAutowired(true)
                 ->setAutoconfigured(true);
         }
     }

@@ -12,6 +12,7 @@
     "require": {
         "symfony/http-kernel" : "^6.1",
         "symfony/twig-bundle" : "^6",
+        "symfony/dom-crawler": "^6",
         "symfony/orm-pack" : "^2"
     },
     "require-dev": {

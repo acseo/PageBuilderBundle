@@ -1,10 +1,10 @@
 # ACSEO PageBuilder Bundle
 
-This bundle provides a PageBuilder Solution built on top of [GrapesJS](https://grapesjs.com/).
+This bundle provides a PageBuilder Solution built on top of [GrapesJS](https://grapesjs.com/). it provides :
 
-When using this Bundle, you will have access to :
 * a **Twig Component** that you can use in your template with `{{ component('PageBuilder' {'idField' : 'my_field'}) }}`. This component will create the PageBuilder area.
 * a `Page` Entity and a `PageController` that will allow you to store and load the HTML, CSS, and JSON config of the generated Web page.
+* a **Twig Component** that you can use to render the page and handle dynamic block rendering `{{ component('PageRender', {'html' : page.html}) }}`
 
 ## Installation
 
@@ -90,11 +90,63 @@ acseo_page_builder:
   # Declare your custom Blocks
   #
   blocks:
-      my-custom-block:
-        label: 'Bloc Custom'
-        category: 'ACSEO'
+blocks:
+      latest-articles:
+        label: 'Latest articles'
+        category: 'Extra blocks'
         media: '<svg viewBox="0 0 24 24"></svg>'
-        content: '<div class="ACSEO">Mon Bloc ACSEO</div>'
+        content:
+          attributes:
+            'render': 'latest_articles'
+          traits:
+            - label: 'Number of articles'
+              name: 'articles'
+              type: 'text'
+              value: '5'
+            - label: 'Number of columns'
+              name: 'columns'
+              type: 'text'
+              value: '2'
+          content: '<div class="block">Latest articles. This block will be replaced by latest articles</div>'
+```
+
+## Dynamic block rendering
+
+You can create a custom block that will allow you, like the Twig extension method `{{ render() }}`, to make a call to a Controller inside your page.
+
+To do so, your block must contain an attribute `render = 'route_name'`. All the attributes of this block will be sent as arguments to the Controller.
+
+The generated output of this fragment will replace the original content of the page.
+
+In our previous example, the custom block `latest-articles` will generate the following HTML :
+
+Stored HTML in Page Entity : 
+
+```html
+<!-- ... -->
+<p>Lorem Ipsum</p>
+<div id="ijf8l" render="latest_articles" columns="1" articles="3">
+  <div class="block">
+    Latest articles. This block will be replaced by latest articles
+  </div>
+</div>
+<p>Lorem Ipsum</p>
+<!-- ... -->
+```
+
+Generated HTML with `{{ component('PageRender', {'html' : page.html}) }}`
+
+```html
+<!-- ... -->
+<p>Lorem Ipsum</p>
+<!-- result from the route latest_articles -->
+<ul>
+  <li>Article 1</li>
+  <li>Article 2</li>
+  <li>Article 3</li>
+</ul>
+<p>Lorem Ipsum</p>
+<!-- ... -->
 ```
 
 # Usage
