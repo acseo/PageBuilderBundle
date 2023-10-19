@@ -11,24 +11,22 @@
 
 namespace ACSEO\PageBuilderBundle\Service;
 
-use ACSEO\PageBuilderBundle\Repository\PageRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use ACSEO\PageBuilderBundle\Entity\PageInterface;
 
-class PageLoader implements PageLoaderInterface
+abstract class AbstractPageManager
 {
-    public function __construct(private PageRepository $pageRepository)
-    {
-    }
-
     public function load(Request $request): JsonResponse
     {
-        $uri = $request->query->get('uri', false);
-        $page = $this->pageRepository->findOneByUri($uri);
+        $page = $this->loadPage($request);
         if ($page) {
             return new JsonResponse($page->getData());
         }
 
         return new JsonResponse();
     }
+
+    abstract public function loadPage(Request $request) : PageInterface;
+    abstract public function save(array $data): PageInterface;
 }

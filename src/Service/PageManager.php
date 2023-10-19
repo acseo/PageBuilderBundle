@@ -11,10 +11,12 @@
 
 namespace ACSEO\PageBuilderBundle\Service;
 
+use Symfony\Component\HttpFoundation\Request;
+use ACSEO\PageBuilderBundle\Entity\PageInterface;
 use ACSEO\PageBuilderBundle\Entity\Page;
 use Doctrine\ORM\EntityManagerInterface;
 
-class PageSaver implements PageSaverInterface
+class PageManager extends AbstractPageManager
 {
     private $pageRepository;
 
@@ -23,7 +25,13 @@ class PageSaver implements PageSaverInterface
         $this->pageRepository = $em->getRepository(Page::class);
     }
 
-    public function save(array $data): Page
+    public function loadPage(Request $request) : PageInterface
+    {
+        $uri = $request->query->get('uri', false);
+        return $this->pageRepository->findOneByUri($uri);
+    }
+
+    public function save(array $data): PageInterface
     {
         Page::validateFromArray($data);
 

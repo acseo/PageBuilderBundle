@@ -15,8 +15,7 @@ namespace ACSEO\PageBuilderBundle;
 
 use ACSEO\PageBuilderBundle\Controller\PageController;
 use ACSEO\PageBuilderBundle\Repository\PageRepository;
-use ACSEO\PageBuilderBundle\Service\PageLoader;
-use ACSEO\PageBuilderBundle\Service\PageSaver;
+use ACSEO\PageBuilderBundle\Service\PageManager;
 use ACSEO\PageBuilderBundle\Twig\PageBuilder;
 use ACSEO\PageBuilderBundle\Twig\PageRender;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
@@ -127,14 +126,18 @@ class PageBuilderBundle extends AbstractBundle
             ->setArgument('$registry', new Reference('doctrine'))
             ->setAutoconfigured(true);
 
-        $builder->register(PageLoader::class)
-            ->setAutoconfigured(true);
-
-        $builder->register(PageSaver::class)
-            ->setAutoconfigured(true);
+        if (!$builder->hasAlias('acseo.page_builder.page_manager'))
+        {
+            $builder->register(PageManager::class)
+                ->setArgument('$em', new Reference('doctrine.orm.entity_manager'))
+                ->setAutoconfigured(true);
+            $builder->setAlias('acseo.page_builder.page_manager', PageManager::class);
+        }
 
         if (PageController::class === $config['grapesjs']['pageController']) {
             $builder->register(PageController::class)
+                ->setAutowired(true)
+                ->setArgument('$pageManager', new Reference('acseo.page_builder.page_manager'))
                 ->setAutoconfigured(true);
         }
     }

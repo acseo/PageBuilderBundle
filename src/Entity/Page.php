@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validation;
 
 #[ORM\Entity(repositoryClass: PageRepository::class)]
-class Page
+class Page implements PageInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -70,7 +70,7 @@ class Page
      *
      * @return Page
      */
-    public static function createFromArray(array $data)
+    public static function createFromArray(array $data) : PageInterface
     {
         self::validateFromArray($data);
         $page = new self();
@@ -88,7 +88,7 @@ class Page
      *
      * @return Page
      */
-    public function updateFromArray(array $data)
+    public function updateFromArray(array $data) : PageInterface
     {
         self::validateFromArray($data);
         $this->uri = $data['uri'];
